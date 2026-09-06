@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>⚡ Charge</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="icon" type="image/png" sizes="512x512" href="assets/Charge_Icon.png">
+<link rel="apple-touch-icon" sizes="512x512" href="assets/Charge_Icon.png">
+<link rel="stylesheet" href="style.css">
+</head>
+  <body>
+
+  <div class="toast-container" id="toastContainer"></div>
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <span class="sidebar-logo-bolt">⚡</span>
+      <span class="sidebar-logo-text">CHARGE</span>
+    </div>
+    <div class="sidebar-nav">
+      <button class="sidebar-item active" data-screen="screenHome" onclick="switchScreen('screenHome',this);closeSidebar()">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+        Início
+      </button>
+      <button class="sidebar-item" data-screen="screenPlans" onclick="switchScreen('screenPlans',this);closeSidebar()">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+        Meus Treinos
+      </button>
+      <button class="sidebar-item" data-screen="screenHistory" onclick="switchScreen('screenHistory',this);closeSidebar()">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        Histórico
+      </button>
+      <button class="sidebar-item" data-screen="screenStats" onclick="switchScreen('screenStats',this);closeSidebar()">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+        Estatísticas
+      </button>
+      <button class="sidebar-item" data-screen="screenInfo" onclick="switchScreen('screenInfo',this);closeSidebar()">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        Informações
+      </button>
+    </div>
+    <div class="sidebar-footer">
+      <button class="sidebar-rest-btn" id="btnRestDay" onclick="openRestDay();closeSidebar()">🛌 Registrar Dia de Descanso</button>
+      <button onclick="toggleTheme()" id="themeToggleBtn" style="display:flex;align-items:center;gap:10px;width:100%;padding:10px 14px;border-radius:var(--radius-sm);background:var(--card);color:var(--text-sec);border:1px solid var(--border);font-size:0.88rem;font-weight:600;margin-bottom:12px;transition:all 0.15s;cursor:pointer">
+        <span id="themeIcon">🌙</span><span id="themeLabel">Modo Claro</span>
+      </button>
+      <div>Charge v2.4 (BETA)· Dados salvos no navegador</div>
+    </div>
+  </nav>
+
+  <div id="app">
+    <header class="app-header">
+      <div class="header-left">
+        <button class="hamburger" onclick="openSidebar()">
+          <span></span><span></span><span></span>
+        </button>
+        <div class="logo" onclick="switchScreen('screenHome',document.querySelector('[data-screen=\'screenHome\']'))" style="cursor:pointer" title="Início"><span class="logo-bolt">⚡</span><span>CHARGE</span></div>
+      </div>
+      <div id="headerActions"></div>
+    </header>
+
+    <main class="main-content">
+
+      <!-- HOME -->
+      <section class="screen active" id="screenHome">
+        <div id="homeEmpty" style="display:none">
+          <div class="empty-state">
+            <span class="empty-icon">⚡</span>
+            <div class="empty-title">Sem treino cadastrado</div>
+            <div class="empty-sub">Monte sua divisão de treino e comece a registrar sua evolução.</div>
+            <button class="btn btn-primary" onclick="openNewPlanWizard()">+ Nova Divisão de Treino</button>
+          </div>
+        </div>
+        <div id="homeActive" style="display:none">
+          <!-- BANNER: rascunho de treino salvo -->
+          <div id="draftBanner" style="display:none;background:linear-gradient(135deg,rgba(255,209,102,0.12),rgba(255,77,0,0.1));border:1px solid rgba(255,209,102,0.3);border-radius:var(--radius);padding:14px 16px;margin-bottom:16px;display:none">
+            <div style="display:flex;align-items:center;gap:10px">
+              <span style="font-size:1.4rem">⚡</span>
+              <div style="flex:1">
+                <div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:0.9rem;color:var(--yellow)">Treino em andamento salvo</div>
+                <div id="draftBannerSub" style="font-size:0.78rem;color:var(--text-sec);margin-top:2px"></div>
+              </div>
+              <button class="btn btn-sm" style="background:var(--yellow);color:#000;font-weight:700" onclick="resumeSessionDraft()">Retomar</button>
+              <button class="btn-icon" onclick="discardDraft()" title="Descartar rascunho" style="background:none;border:none;color:var(--text-dim);font-size:1.1rem">✕</button>
+            </div>
+          </div>
+          <div class="welcome-block">
+            <div class="welcome-date" id="homeDateLabel"></div>
+            <div class="welcome-title" id="homeGreeting">Bora treinar! 💪</div>
+            <div class="welcome-sub" id="homeSubtitle"></div>
+            <!-- 7-segment week bar -->
+            <div id="weekBarSegments" style="display:flex;gap:4px;margin-top:16px"></div>
+            <div class="charge-label" style="margin-top:6px">
+              <span>Semana atual</span>
+              <span id="chargeBarLabel">0 treinos esta semana</span>
+            </div>
+          </div>
+          <div class="section-title">Esta semana</div>
+          <div class="week-streak" id="weekStreak"></div>
+          <div class="section-title" style="margin-top:20px">Treino de hoje</div>
+          <div id="todayActionArea"></div>
+        </div>
+      </section>
+
+      <!-- PLANOS -->
+      <section class="screen" id="screenPlans">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+          <h2 style="font-family:'Space Grotesk',sans-serif;font-size:1.2rem;font-weight:700">Meus Treinos</h2>
+          <button class="btn btn-primary btn-sm" onclick="openNewPlanWizard()">+ Novo</button>
+        </div>
+        <div id="plansList"></div>
+      </section>
+
+      <!-- HISTÓRICO -->
+      <section class="screen" id="screenHistory">
+        <h2 style="font-family:'Space Grotesk',sans-serif;font-size:1.2rem;font-weight:700;margin-bottom:16px">Histórico</h2>
+        <div id="historyList"></div>
+      </section>
+
+      <!-- STATS -->
+      <section class="screen" id="screenStats">
+        <h2 style="font-family:'Space Grotesk',sans-serif;font-size:1.2rem;font-weight:700;margin-bottom:16px">Estatísticas</h2>
+        <div class="stats-grid" id="statsGrid"></div>
+        <div class="section-title">Frequência (últimas semanas)</div>
+        <div class="card"><div class="heatmap-wrap"><div class="heatmap" id="heatmap"></div></div></div>
+      </section>
+
+      <!-- INFO -->
+      <section class="screen" id="screenInfo">
+        <h2 style="font-family:'Space Grotesk',sans-serif;font-size:1.2rem;font-weight:700;margin-bottom:16px">Informações do Aplicativo</h2>
+        
+        <div class="card" style="margin-bottom: 16px;">
+          <h3 style="font-family:'Space Grotesk',sans-serif; font-size: 1rem; margin-bottom: 8px;">📖 Como usar o Charge</h3>
+          <p style="color:var(--text-sec); font-size: 0.85rem; line-height: 1.5; margin-bottom: 8px;">
+            O <strong>Charge</strong> foi criado para ajudar você a acompanhar seus treinos de forma simples e rápida.
+          </p>
+          <ul style="color:var(--text-sec); font-size: 0.85rem; line-height: 1.5; padding-left: 20px;">
+            <li><strong>Meus Treinos:</strong> Crie suas divisões de treino (Ex: ABC, ABCD). Adicione os exercícios com séries, repetições e técnicas.</li>
+            <li><strong>Início:</strong> Veja qual é o treino de hoje, inicie a sessão e acompanhe seu progresso ao longo da semana.</li>
+            <li><strong>Histórico:</strong> Acompanhe todos os treinos que você já realizou.</li>
+            <li><strong>Estatísticas:</strong> Analise sua constância e frequência de treinos em formato de mapa de calor.</li>
+            <li><strong>Dias de Descanso:</strong> Registre seus dias off para manter o controle da frequência correto.</li>
+          </ul>
+        </div>
+
+        <div class="card" style="margin-bottom: 16px;">
+          <h3 style="font-family:'Space Grotesk',sans-serif; font-size: 1rem; margin-bottom: 8px;">✨ Novidades (Changelog)</h3>
+          
+          <div style="margin-bottom: 12px;">
+            <div style="font-weight: 600; font-size: 0.9rem;">v2.4 (Atual)</div>
+            <ul style="color:var(--text-sec); font-size: 0.85rem; line-height: 1.5; padding-left: 20px; margin-top: 4px;">
+              <li>Nova seção de <strong>Informações do Aplicativo</strong>.</li>
+              <li>Data de criação adicionada na tela de "Meus Treinos".</li>
+              <li>Novo botão para <strong>copiar o treino completo</strong> para a área de transferência.</li>
+            </ul>
+          </div>
+          
+          <div style="margin-bottom: 12px;">
+            <div style="font-weight: 600; font-size: 0.9rem;">v2.3</div>
+            <ul style="color:var(--text-sec); font-size: 0.85rem; line-height: 1.5; padding-left: 20px; margin-top: 4px;">
+              <li>Salvar treino retroativo em dias passados.</li>
+              <li>Técnica "Muscle-Round" adicionada aos exercícios.</li>
+              <li>Botão para modo Claro/Escuro melhorado.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 style="font-family:'Space Grotesk',sans-serif; font-size: 1rem; margin-bottom: 8px;">🔒 Sobre os seus Dados</h3>
+          <p style="color:var(--text-sec); font-size: 0.85rem; line-height: 1.5;">
+            Todos os seus treinos e históricos são salvos <strong>localmente no seu navegador</strong> (LocalStorage). Não há necessidade de criar conta ou fazer login. No entanto, se você limpar os dados do navegador, seu histórico poderá ser apagado.
+          </p>
+        </div>
+      </section>
+
+      <!-- SESSION -->
+      <section class="screen" id="screenSession"></section>
+
+    </main>
+  </div>
+
+  <!-- MODALS -->
+  <div class="modal-overlay" id="modalNewPlan">
+    <div class="modal-sheet">
+      <div class="modal-drag"></div>
+      <div class="modal-header">
+        <div class="modal-title" id="wizardTitle">Nova Divisão de Treino</div>
+        <button class="btn btn-icon" onclick="closeModal('modalNewPlan')">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="step-indicator" id="wizardSteps"></div>
+        <div id="wizardContent"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" id="wizardBtnBack" style="flex:1" onclick="wizardBack()">← Voltar</button>
+        <button class="btn btn-primary" id="wizardBtnNext" style="flex:2" onclick="wizardNext()">Próximo →</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="modalExercise">
+    <div class="modal-sheet">
+      <div class="modal-drag"></div>
+      <div class="modal-header">
+        <div class="modal-title" id="exModalTitle">Adicionar Exercício</div>
+        <button class="btn btn-icon" onclick="closeModal('modalExercise')">✕</button>
+      </div>
+      <div class="modal-body" id="exModalBody"></div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" style="flex:1" onclick="closeModal('modalExercise')">Cancelar</button>
+        <button class="btn btn-primary" style="flex:2" onclick="saveExercise()">Salvar Exercício</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="modalChooseSplit">
+    <div class="modal-sheet">
+      <div class="modal-drag"></div>
+      <div class="modal-header">
+        <div class="modal-title">Iniciar Treino</div>
+        <button class="btn btn-icon" onclick="closeModal('modalChooseSplit')">✕</button>
+      </div>
+      <div class="modal-body" id="chooseSplitBody"></div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="modalRestDay">
+    <div class="modal-sheet">
+      <div class="modal-drag"></div>
+      <div class="modal-header">
+        <div class="modal-title">Dia de Descanso</div>
+        <button class="btn btn-icon" onclick="closeModal('modalRestDay')">✕</button>
+      </div>
+      <div class="modal-body">
+        <div style="text-align:center;padding:10px 0">
+          <div style="font-size:3rem;margin-bottom:10px">🛌</div>
+          <p style="color:var(--text-sec);font-size:0.9rem;line-height:1.6">Registrar este dia como descanso para controle de frequência?</p>
+        </div>
+        <div class="form-group" style="margin-top:16px">
+          <label class="form-label">Observação (opcional)</label>
+          <textarea class="note-textarea" id="restNote" placeholder="Ex: recuperação pós-competição..."></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" style="flex:1" onclick="closeModal('modalRestDay')">Cancelar</button>
+        <button class="btn" style="flex:2;background:var(--blue-dim);color:var(--blue);border:1px solid rgba(91,141,239,0.25)" onclick="confirmRestDay()">Registrar Descanso</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="modalFinish">
+    <div class="modal-sheet">
+      <div class="modal-drag"></div>
+      <div class="modal-header">
+        <div class="modal-title">Finalizar Treino ⚡</div>
+        <button class="btn btn-icon" onclick="closeModal('modalFinish')">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="divider-label">Extras do dia</div>
+        <div class="card" style="margin-bottom:12px">
+          <div class="toggle-row">
+            <span class="toggle-label">🏃 Cardio</span>
+            <label class="toggle-switch"><input type="checkbox" id="extCardio"><span class="toggle-slider"></span></label>
+          </div>
+          <div id="cardioDetail" style="display:none;margin-top:10px">
+            <div class="form-row">
+              <div class="form-group"><label class="form-label">Tipo</label><input type="text" id="cardioType" placeholder="Esteira, bike..."></div>
+              <div class="form-group"><label class="form-label">Duração (min)</label><input type="number" id="cardioDuration" placeholder="30"></div>
+            </div>
+          </div>
+          <div class="toggle-row">
+            <span class="toggle-label">🔥 Abdominal</span>
+            <label class="toggle-switch"><input type="checkbox" id="extAbs"><span class="toggle-slider"></span></label>
+          </div>
+          <div id="absDetail" style="display:none;margin-top:10px">
+            <div class="form-group"><label class="form-label">Exercícios abdominais</label><textarea class="note-textarea" id="absDesc" placeholder="Ex: 3x20 crunch, 3x30s prancha..."></textarea></div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Observações gerais do treino</label>
+          <textarea class="note-textarea" id="sessionNote" placeholder="Como foi o treino? Algo que queira lembrar..."></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" style="flex:1" onclick="closeModal('modalFinish')">Voltar</button>
+        <button class="btn btn-primary" style="flex:2" onclick="finishSession()">✓ Salvar Treino</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+
+  <!-- MODAL: RETROACTIVE LOG -->
+  <div class="modal-overlay" id="modalRetroLog">
+    <div class="modal-sheet">
+      <div class="modal-drag"></div>
+      <div class="modal-header">
+        <div>
+          <div class="modal-title">Registrar Treino Passado</div>
+          <div id="retroLogDate" style="font-size:0.78rem;color:var(--text-sec);margin-top:2px"></div>
+        </div>
+        <button class="btn btn-icon" onclick="closeModal('modalRetroLog')">✕</button>
+      </div>
+      <div class="modal-body">
+        <div id="retroExistingInfo"></div>
+        <div class="form-group">
+          <label class="form-label">Divisão de treino</label>
+          <select id="retroSplitSelect"></select>
+        </div>
+        <div class="form-label" style="margin-bottom:10px">Exercícios</div>
+        <div id="retroExerciseList"></div>
+        <div class="divider-label" style="margin-top:16px">Extras</div>
+        <div class="card" style="margin-bottom:12px">
+          <div class="toggle-row">
+            <span class="toggle-label">🏃 Cardio</span>
+            <label class="toggle-switch"><input type="checkbox" id="retroCardio" onchange="document.getElementById('retroCardioDetail').style.display=this.checked?'':'none'"><span class="toggle-slider"></span></label>
+          </div>
+          <div id="retroCardioDetail" style="display:none;padding-top:8px">
+            <div class="form-row">
+              <div class="form-group"><label class="form-label">Tipo</label><input type="text" id="retroCardioType" placeholder="Esteira..."></div>
+              <div class="form-group"><label class="form-label">Duração (min)</label><input type="number" id="retroCardioDuration" placeholder="30"></div>
+            </div>
+          </div>
+          <div class="toggle-row">
+            <span class="toggle-label">🔥 Abdominal</span>
+            <label class="toggle-switch"><input type="checkbox" id="retroAbs" onchange="document.getElementById('retroAbsDetail').style.display=this.checked?'':'none'"><span class="toggle-slider"></span></label>
+          </div>
+          <div id="retroAbsDetail" style="display:none;padding-top:8px">
+            <div class="form-group"><label class="form-label">Exercícios</label><textarea class="note-textarea" id="retroAbsDesc" placeholder="Ex: 3x20 crunch..."></textarea></div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Observação geral</label>
+          <textarea class="note-textarea" id="retroNote" placeholder="Como foi o treino neste dia?"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer" style="flex-direction:column;gap:8px">
+        <div style="display:flex;gap:8px;width:100%">
+          <button class="btn btn-ghost" style="flex:1" onclick="closeModal('modalRetroLog')">Cancelar</button>
+          <button class="btn" style="flex:1;background:var(--blue-dim);color:var(--blue);border:1px solid rgba(91,141,239,0.25)" onclick="retroMarkRest()">🛌 Descanso</button>
+          <button class="btn btn-primary" style="flex:2" onclick="saveRetroLog()">⚡ Salvar Treino</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  </body>
+</html>
