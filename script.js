@@ -127,7 +127,12 @@ function renderHome(){
   document.getElementById('homeEmpty').style.display='none';
   document.getElementById('homeActive').style.display='block';
   const h=new Date().getHours();
-  document.getElementById('homeGreeting').textContent=(h<12?'Bom dia, ':h<18?'Boa tarde, ':'Boa noite, ')+'Luis!';
+  let userName = DB.get('userName', '');
+  if (!userName) {
+    userName = prompt('Como você gostaria de ser chamado?') || 'Atleta';
+    DB.set('userName', userName);
+  }
+  document.getElementById('homeGreeting').textContent=(h<12?'Bom dia, ':h<18?'Boa tarde, ':'Boa noite, ')+userName+'!';
   document.getElementById('homeSubtitle').textContent=todaySess?(todaySess.type==='rest'?'Hoje é dia de descanso 🛌':`Treino ${todaySess.splitLetter} registrado hoje!`):`Plano ativo: ${plan.name}`;
   renderWeekBar();
   renderWeekStrip();
