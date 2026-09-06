@@ -1,0 +1,48 @@
+# ── Sistema operacional ──────────────────
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# ── Editores e IDEs ──────────────────────
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+*.swp
+*.swo
+*~
+
+# ── Node (caso venha a usar ferramentas de build) ──
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+.npm
+
+# ── Logs ─────────────────────────────────
+*.log
+logs/
+
+# ── Ambientes e segredos ─────────────────
+.env
+.env.local
+.env.*.local
+
+# ── Build e dist (para uso futuro) ───────
+dist/
+build/
+out/
+.cache/
+
+# ── Temporários ──────────────────────────
+*.tmp
+*.temp
+*.bak
+*.orig
